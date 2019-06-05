@@ -7,7 +7,7 @@ namespace Bot.Modules
 {
     public class Config
     {
-        public static ConfigParams Read()
+        public static ConfigParamsNS Read()
         {
             try
             {   // Open the text file using a stream reader.
@@ -15,13 +15,22 @@ namespace Bot.Modules
                 {
                     // Read the stream to a string, and write the string to the console.
                     string content = sr.ReadToEnd();
-                    ConfigParams cp = JsonConvert.DeserializeObject<ConfigParams>(content);
+
+                    ConfigParamsNS cp = JsonConvert.DeserializeObject<ConfigParamsNS>(content);
+                    ConfigParams.TwitchAuth = cp.TwitchAuth;
+                    ConfigParams.Debug = cp.Debug;
+                    ConfigParams.dbName = cp.dbName;
+                    ConfigParams.ip = cp.ip;
+                    ConfigParams.port = cp.port;
+                    ConfigParams.userName = cp.userName;
+
                     Console.WriteLine("Reading \'config.json\'...");
-                    Console.WriteLine($"\tTwitchAuth:{cp.TwitchAuth}");
-                    Console.WriteLine($"\tdbName:{cp.dbName}");
-                    Console.WriteLine($"\tuserName:{cp.userName}");
-                    Console.WriteLine($"\tip:{cp.ip}");
-                    Console.WriteLine($"\tport:{cp.port}");
+                    Console.WriteLine($"\tTwitchAuth:{ConfigParams.TwitchAuth}");
+                    Console.WriteLine($"\tdbName:{ConfigParams.dbName}");
+                    Console.WriteLine($"\tuserName:{ConfigParams.userName}");
+                    Console.WriteLine($"\tip:{ConfigParams.ip}");
+                    Console.WriteLine($"\tport:{ConfigParams.port}");
+                    Console.WriteLine($"\tport:{ConfigParams.Debug}");
                     return cp;
                 }
             }
@@ -35,13 +44,25 @@ namespace Bot.Modules
         }
     }
 
-    public class ConfigParams
+    public static class ConfigParams
     {
-        public string TwitchAuth { get; set; }
-        public string dbName { get; set; }
-        public string userName {get;set;}
-        public string ip {get;set;}
-        public int port {get;set;}
+        public static string TwitchAuth { get; set; }
+        public static string dbName { get; set; }
+        public static string userName {get;set;}
+        public static string ip {get;set;}
+        public static int port {get;set;}
+        public static bool Debug {get;set;}
+
+    }
+
+    public  class ConfigParamsNS
+    {
+        public  string TwitchAuth { get; set; }
+        public  string dbName { get; set; }
+        public  string userName {get;set;}
+        public  string ip {get;set;}
+        public  int port {get;set;}
+        public  bool Debug {get;set;}
 
     }
 }

@@ -12,12 +12,13 @@ namespace Bot.Database.SQLite {
             optionsBuilder.UseSqlite("Data Source=streams.db");
         }
     }
-
+    //TODO: Add phonetic name for points.
     public class Stream 
     {
         public int StreamId {get;set;}
         public List<User> Users {get;set;}
         public string PointsName {get;set;}
+        public string PointsCommand {get;set;}
         public DateTime LastGiveaway {get;set;}
         public string channelName {get;set;}
         

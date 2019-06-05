@@ -1,6 +1,7 @@
 using System;
 using System.Net.Sockets;
 using System.IO;
+using System.Collections.Generic;
 
 namespace Bot.Modules
 {
@@ -8,16 +9,16 @@ namespace Bot.Modules
     public class IrcClient
     {
         public string userName;
-        public static string[] channels;
+        public static List<string> channels;
         private int port;
-        private string password;
+        private string oauth;
         private string ip;
 
         public TcpClient _tcpClient = new TcpClient();
         private StreamReader _inputStream;
         private StreamWriter _outputStream;
 
-        public IrcClient(string ip, int port, string userName, string password, string[] _channels)
+        public IrcClient(string ip, int port, string userName, string oauth, List<string> _channels)
         {
             try
             {
@@ -25,7 +26,7 @@ namespace Bot.Modules
                 channels = _channels;
                 this.ip = ip;
                 this.port = port;
-                this.password = password;
+                this.oauth = oauth;
 
                 ReconnectIfNeeded();
                 /*_tcpClient = new TcpClient(ip, port);
@@ -55,7 +56,7 @@ namespace Bot.Modules
                     _inputStream = new StreamReader(_tcpClient.GetStream());
                     _outputStream = new StreamWriter(_tcpClient.GetStream());
 
-                    _outputStream.WriteLine("PASS " + password);
+                    _outputStream.WriteLine("PASS " + oauth);
                     _outputStream.WriteLine("NICK " + userName);
                     _outputStream.WriteLine("USER " + userName + " 8 * :" + userName);
                     foreach (string channel in channels)
@@ -79,7 +80,7 @@ namespace Bot.Modules
                 _inputStream = new StreamReader(_tcpClient.GetStream());
                 _outputStream = new StreamWriter(_tcpClient.GetStream());
 
-                _outputStream.WriteLine("PASS " + password);
+                _outputStream.WriteLine("PASS " + oauth);
                 _outputStream.WriteLine("NICK " + userName);
                 _outputStream.WriteLine("USER " + userName + " 8 * :" + userName);
                 foreach (string channel in channels)
