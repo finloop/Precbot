@@ -53,27 +53,42 @@ namespace Bot.Modules.Commands
                     irc.SendPublicChatMessage(channel, $"UserPointsOnOtherChannel: stream with {pointsCommand} was not found ..");
             }
         }
-        public static void CheckSomeonesPoints(StreamsContext db, IrcClient irc, string channel, string sender, string msg)
+        // !donejt user 100
+        public static void GivePointsFromSenderToReciv(StreamsContext db, IrcClient irc, string channel, string sender, string reciv, List<string> msg) 
         {
             if(Extensions.CheckIfStreamExists(db, channel))
             {
-                int userId = Extensions.GetUserIndex(db, channel, sender);
-                if(userId != -1)
+                var stream = db.Streams.Where(x => x.channelName.Equals(channel)).Include(x => x.Users).First();
+                int senderId = Extensions.GetUserIndex(db, channel, sender);
+                int recivId = Extensions.GetUserIndex(db, channel, reciv);
+                long amount = long.Parse(msg[2]);
+                if(senderId != -1)
                 {
+                    if(recivId != -1)
+                    {
+                        long senderPoints = stream.Users[senderId].Points;
+
+                        if(senderPoints >= amount && amount > 0)
+                        {
+                            var sender_user = stream.Users[senderId];
+                            var reciv_user = stream.Users[recivId];
+                            sender_user.Points -= amount;
+                            reciv_user.Points += amount;
+                            reciv_user.TotalPoints += amount;
+                            irc.SendPublicChatMessage(channel, $"{sender} przekazał {amount} {stream.PointsName} {reciv}");
+                        } else 
+                            if(ConfigParams.Debug)
+                                irc.SendPublicChatMessage(channel, $"GivePointsFromSenderToUser: {sender} doesnot have enough points.");
+                        
+                    } else
+                        if(ConfigParams.Debug)
+                            irc.SendPublicChatMessage(channel, $"GivePointsFromSenderToUser: {reciv} was not found in this channel.");
+                } else
                     if(ConfigParams.Debug)
-                        irc.SendPublicChatMessage(channel, $"Points: {sender} was found in this channel.");
-                    var stream = db.Streams.Where(x => x.channelName.Equals(channel)).Include(x => x.Users).First();
-                    //TODO: Add phonetic name for points.
-                    irc.SendPublicChatMessage(channel, $"{sender} posiada {stream.Users[userId].Points} {stream.PointsName}");
-                }
-                else
-                    if(ConfigParams.Debug)
-                        irc.SendPublicChatMessage(channel, $"Points: {msg.Split(' ')[1]} was not found in this channel.");
-            } else
-            {
-                if(ConfigParams.Debug)
-                    irc.SendPublicChatMessage(channel, "Points: stream was not found in this channel..");
+                        irc.SendPublicChatMessage(channel, $"GivePointsFromSenderToUser: {sender} was not found in this channel.");
+
             }
         }
+        
     }
 }

@@ -31,30 +31,67 @@ namespace Bot.Modules
                     string channel = vs[1];
                     string msg = vs[2];
 
-                    List<string> s_msg = new List<string>(msg.Split(" "));
 
-                    switch (s_msg.Count)
+                    if (msg.StartsWith("!"))
                     {
-                        // Show your points depending on what was send
-                        case (1):
-                            s_msg[0] = s_msg[0].Replace("!", "");
-                            if (s_msg[0] == "points")
-                            {
-                                Points.UserPointsOnThisChannel(db, irc, channel, sender, msg);
-                            } else
-                            //TODO: swap this to list s_msg[0] in listofPOintscommands
-                            if (s_msg[0] == "precelki")
-                            {
-                                Points.UserPointsOnOtherChannel(db, irc, channel, sender, msg, s_msg[0]);
-                            } else 
-                            if(s_msg[0] == "beczki")
-                            {
-                                Points.UserPointsOnOtherChannel(db, irc, channel, sender, msg, s_msg[0]);
-                            }
-                            break;
+                        List<string> s_msg = new List<string>(msg.Split(" "));
+                        switch (s_msg.Count)
+                        {
+                            // Show your points depending on what was send
+                            case (1):
+                                s_msg[0] = s_msg[0].Replace("!", "");
+                                if (s_msg[0] == "points")
+                                {
+                                    Points.UserPointsOnThisChannel(db, irc, channel, sender, msg);
+                                }
+                                else
+                                //TODO: swap this to list s_msg[0] in listofPOintscommands
+                                if (s_msg[0] == "precelki")
+                                {
+                                    Points.UserPointsOnOtherChannel(db, irc, channel, sender, msg, s_msg[0]);
+                                }
+                                else
+                                if (s_msg[0] == "beczki")
+                                {
+                                    Points.UserPointsOnOtherChannel(db, irc, channel, sender, msg, s_msg[0]);
+                                }
+                                break;
+                            // Check someones elses points
+                            case (2):
+                                s_msg[0] = s_msg[0].Replace("!", "");
+                                if (s_msg[0] == "points")
+                                {
+                                    Points.UserPointsOnThisChannel(db, irc, channel, s_msg[1], msg);
+                                }
+                                else
+                                //TODO: swap this to list s_msg[0] in listofPOintscommands
+                                if (s_msg[0] == "precelki")
+                                {
+                                    Points.UserPointsOnOtherChannel(db, irc, channel, s_msg[1], msg, s_msg[0]);
+                                }
+                                else
+                                if (s_msg[0] == "beczki")
+                                {
+                                    Points.UserPointsOnOtherChannel(db, irc, channel, s_msg[1], msg, s_msg[0]);
+                                }
+                                break;
+                            case (3):
+                                s_msg[0] = s_msg[0].Replace("!", "");
+                                if (s_msg[0] == "donejt")
+                                {
+                                    Points.GivePointsFromSenderToReciv(db, irc, channel, sender, s_msg[1], s_msg);
+                                }
+                                else
+                                if (s_msg[0] == "donate")
+                                {
+                                    Points.GivePointsFromSenderToReciv(db, irc, channel, sender, s_msg[1], s_msg);
+                                }
+                                break;
+                        }
                     }
-                }
 
+                }
+                db.SaveChanges();
             }
         }
     }

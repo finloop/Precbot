@@ -26,8 +26,8 @@ namespace Bot
             //Console.WriteLine(Extensions.CheckIfStreamExists(db, "Preclak"));
             // update 'User' set Name = "lordozopl" where Name = "Lordozopl"
 
-            RebuildDatabase();
-            //StartBot();
+            //RebuildDatabase();
+            StartBot();
 
             //Console.WriteLine(ConfigParams.Debug);
             //Console.WriteLine(Extensions.GetUserPoints(db, "Gragasgoesgym", "Lordozopl"));
@@ -88,8 +88,8 @@ namespace Bot
                 var user = new User()
                 {
                     Name = data[0],
-                    Points = long.Parse(data[1]) / 2,
-                    TotalPoints = long.Parse((data[2])) / 2,
+                    Points = long.Parse(data[1]),
+                    TotalPoints = long.Parse((data[2])),
                     TotalTimeSpend = new TimeSpan(0, 0, 0),
                     LastSeen = DateTime.UtcNow,
                     Attacker = "",
