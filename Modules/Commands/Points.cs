@@ -18,7 +18,7 @@ namespace Bot.Modules.Commands
                 if(userId != -1)
                 {
                     if(ConfigParams.Debug)
-                        irc.SendPublicChatMessage(channel, $"UserPointsOnThisChannel: {user} was found in this channel.");
+                    irc.SendPublicChatMessage(channel, $"UserPointsOnThisChannel: {user} was found in this channel.");
                     var stream = db.Streams.Where(x => x.channelName.Equals(channel)).Include(x => x.Users).First();
                     irc.SendPublicChatMessage(channel, $"{user} posiada {stream.Users[userId].Points} {stream.PointsName}");
                 }
@@ -37,7 +37,7 @@ namespace Bot.Modules.Commands
             if(streams.Count() >= 1)
             {
                 var stream = streams.First();
-                int userId = Extensions.GetUserIndex(db, stream.channelName, sender);
+                int userId = stream.Users.FindIndex(x => x.Name.Equals(sender));
                 if(userId != -1)
                 {
                     if(ConfigParams.Debug)
@@ -59,8 +59,8 @@ namespace Bot.Modules.Commands
             if(Extensions.CheckIfStreamExists(db, channel))
             {
                 var stream = db.Streams.Where(x => x.channelName.Equals(channel)).Include(x => x.Users).First();
-                int senderId = Extensions.GetUserIndex(db, channel, sender);
-                int recivId = Extensions.GetUserIndex(db, channel, reciv);
+                int senderId = stream.Users.FindIndex(x => x.Name.Equals(sender));
+                int recivId = stream.Users.FindIndex(x => x.Name.Equals(reciv));
                 long amount = long.Parse(msg[2]);
                 if(senderId != -1)
                 {

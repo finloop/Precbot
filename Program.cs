@@ -7,6 +7,8 @@ using System.Linq;
 using Bot.Database;
 using System.Threading;
 using System.IO;
+using Bot.Modules.Commands;
+using System.Threading.Tasks;
 
 namespace Bot
 {
@@ -27,7 +29,10 @@ namespace Bot
             // update 'User' set Name = "lordozopl" where Name = "Lordozopl"
 
             //RebuildDatabase();
+            Config.Read();
+            StartWorkers();
             StartBot();
+
 
             //Console.WriteLine(ConfigParams.Debug);
             //Console.WriteLine(Extensions.GetUserPoints(db, "Gragasgoesgym", "Lordozopl"));
@@ -41,7 +46,6 @@ namespace Bot
             using (var db = new StreamsContext())
             {
                 channels = db.Streams.Where(x => x.channelName != "").Select(p => p.channelName).ToList();
-                Config.Read();
             }
             IrcClient irc = new IrcClient(ConfigParams.ip, ConfigParams.port, ConfigParams.userName, ConfigParams.TwitchAuth, channels);
             while (true)
@@ -51,6 +55,13 @@ namespace Bot
                 CommandsHandler.MessageHandler(irc, msg);
                 Thread.Sleep(20);
             }
+        }
+
+        public static void StartWorkers()
+        {
+            Workers.points_thread = new Thread(new ThreadStart(Workers.BackgroundWorker5min));
+            Workers.points_thread.IsBackground = true;
+            Workers.points_thread.Start();
         }
         public static void RebuildDatabase()
         {

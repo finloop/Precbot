@@ -55,7 +55,12 @@ namespace Bot.Modules
                                 {
                                     Points.UserPointsOnOtherChannel(db, irc, channel, sender, msg, s_msg[0]);
                                 }
+                                if (s_msg[0] == "watchtime")
+                                {
+                                    Utils.GetUserWatchtime(db, irc, channel, sender);
+                                }
                                 break;
+                                
                             // Check someones elses points
                             case (2):
                                 s_msg[0] = s_msg[0].Replace("!", "");
@@ -73,6 +78,10 @@ namespace Bot.Modules
                                 if (s_msg[0] == "beczki")
                                 {
                                     Points.UserPointsOnOtherChannel(db, irc, channel, s_msg[1], msg, s_msg[0]);
+                                }
+                                if (s_msg[0] == "watchtime")
+                                {
+                                    Utils.GetUserWatchtime(db, irc, channel, s_msg[1]);
                                 }
                                 break;
                             case (3):

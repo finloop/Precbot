@@ -23,6 +23,7 @@ namespace Bot.Modules
                     ConfigParams.ip = cp.ip;
                     ConfigParams.port = cp.port;
                     ConfigParams.userName = cp.userName;
+                    ConfigParams.client_Id = cp.client_Id;
 
                     Console.WriteLine("Reading \'config.json\'...");
                     Console.WriteLine($"\tTwitchAuth:{ConfigParams.TwitchAuth}");
@@ -31,6 +32,7 @@ namespace Bot.Modules
                     Console.WriteLine($"\tip:{ConfigParams.ip}");
                     Console.WriteLine($"\tport:{ConfigParams.port}");
                     Console.WriteLine($"\tport:{ConfigParams.Debug}");
+                    Console.WriteLine($"\tclientId:{ConfigParams.client_Id}");
                     return cp;
                 }
             }
@@ -52,6 +54,7 @@ namespace Bot.Modules
         public static string ip {get;set;}
         public static int port {get;set;}
         public static bool Debug {get;set;}
+        public static string client_Id {get;set;}
 
     }
 
@@ -63,6 +66,7 @@ namespace Bot.Modules
         public  string ip {get;set;}
         public  int port {get;set;}
         public  bool Debug {get;set;}
+        public string client_Id {get;set;}
 
     }
 }
