@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using Bot.Database;
 using System.Threading;
+using System.IO;
 
 namespace Bot
 {
@@ -13,63 +14,125 @@ namespace Bot
     {
         static void Main(string[] args)
         {
-            using(var db = new StreamsContext())
-            {
-                //DoSomeWork(db);
-                //db.SaveChanges();
-                /*foreach(var stream in db.Streams.ToList())
-                {
-                    stream.PointsCommand = "beczki";
-                    stream.PointsName = "beczek";
-                    db.SaveChanges();
-                }*/
-                //Console.WriteLine(Extensions.CheckIfStreamExists(db, "Preclak"));
-                // update 'User' set Name = "lordozopl" where Name = "Lordozopl"
-                List<string> channels = db.Streams.Where(x => x.channelName != "").Select(p => p.channelName).ToList();
-                Config.Read();
 
-                IrcClient irc = new IrcClient(ConfigParams.ip, ConfigParams.port, ConfigParams.userName, ConfigParams.TwitchAuth, channels);
-                while(true){
-                    string msg = irc.ReadMessage();
-                    Console.WriteLine(msg);
-                    CommandsHandler.MessageHandler(irc, msg);
-                    Thread.Sleep(50);
-                }
-                //Console.WriteLine(ConfigParams.Debug);
-                //Console.WriteLine(Extensions.GetUserPoints(db, "Gragasgoesgym", "Lordozopl"));
-                //Console.WriteLine(Extensions.GetUserTotalPoints(db, "Gragasgoesgym", "Kappa"));
-                //Console.WriteLine(Extensions.GetUserTotalPoints(db, "Gragasgoesgym", "Gragasgoesgym"));
+            //DoSomeWork(db);
+            //db.SaveChanges();
+            /*foreach(var stream in db.Streams.ToList())
+            {
+                stream.PointsCommand = "beczki";
+                stream.PointsName = "beczek";
+                db.SaveChanges();
+            }*/
+            //Console.WriteLine(Extensions.CheckIfStreamExists(db, "Preclak"));
+            // update 'User' set Name = "lordozopl" where Name = "Lordozopl"
+
+            RebuildDatabase();
+            //StartBot();
+
+            //Console.WriteLine(ConfigParams.Debug);
+            //Console.WriteLine(Extensions.GetUserPoints(db, "Gragasgoesgym", "Lordozopl"));
+            //Console.WriteLine(Extensions.GetUserTotalPoints(db, "Gragasgoesgym", "Kappa"));
+            //Console.WriteLine(Extensions.GetUserTotalPoints(db, "Gragasgoesgym", "Gragasgoesgym"));
+
+        }
+        public static void StartBot()
+        {
+            List<string> channels = new List<string>();
+            using (var db = new StreamsContext())
+            {
+                channels = db.Streams.Where(x => x.channelName != "").Select(p => p.channelName).ToList();
+                Config.Read();
+            }
+            IrcClient irc = new IrcClient(ConfigParams.ip, ConfigParams.port, ConfigParams.userName, ConfigParams.TwitchAuth, channels);
+            while (true)
+            {
+                string msg = irc.ReadMessage();
+                Console.WriteLine(msg);
+                CommandsHandler.MessageHandler(irc, msg);
+                Thread.Sleep(20);
             }
         }
-        public static void DoSomeWork(StreamsContext db) 
-        {   
-            var user1 = new User() {
-                Name = "lordozopl",
-                Points = 500,
-                TotalPoints = 1000
-            };
+        public static void RebuildDatabase()
+        {
+            // DOESNT BUILD
+            /* if (File.Exists("streams.db"))
+            {
+                File.Delete("streams.db");
+                Directory.Delete("Migrations", true);
+                System.Diagnostics.Process process = new System.Diagnostics.Process();
+                System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo();
+                startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
+                startInfo.FileName = "cmd.exe";
+                startInfo.Arguments = "/C dotnet ef migrations add Initial";
+                process.StartInfo = startInfo;
+                process.Start();
+                process.WaitForExit();
 
-            var user2 = new User() {
-                Name = "preclak",
-                Points = 600,
-                TotalPoints = 2000
-            };
+                process = new System.Diagnostics.Process();
+                startInfo = new System.Diagnostics.ProcessStartInfo();
+                startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
+                startInfo.FileName = "cmd.exe";
+                startInfo.Arguments = "/C dotnet ef database update";
+                process.StartInfo = startInfo;
+                process.Start();
+                process.WaitForExit();
+            } */
 
-            var user3 = new User() {
-                Name = "gragasgoesgym",
-                Points = 700,
-                TotalPoints = 3000
-            };
+            List<User> g_users = new List<User>();
+            List<User> p_users = new List<User>();
+            var lines = File.ReadLines("POINTS.txt");
+            foreach (var line in lines)
+            {
+                // username, points, totalpoints
+                var data = line.Split(';');
+                var user = new User()
+                {
+                    Name = data[0],
+                    Points = long.Parse(data[1]) / 2,
+                    TotalPoints = long.Parse((data[2])) / 2,
+                    TotalTimeSpend = new TimeSpan(0, 0, 0),
+                    LastSeen = DateTime.UtcNow,
+                    Attacker = "",
+                    pool = 0
+                };
+                var user2 = new User()
+                {
+                    Name = data[0],
+                    Points = 0,
+                    TotalPoints = 0,
+                    TotalTimeSpend = new TimeSpan(0, 0, 0),
+                    LastSeen = DateTime.Now,
+                    Attacker = "",
+                    pool = 0
+                };
+                g_users.Add(user);
+                p_users.Add(user2);
+            }
+            using (var db = new StreamsContext())
+            {
+                db.Streams.Add(new Bot.Database.SQLite.Stream()
+                {
+                    PointsName = "beczek",
+                    channelName = "gragasgoesgym",
+                    LastGiveaway = DateTime.Now,
+                    Users = g_users,
+                    PointsCommand = "beczki",
+                    giveaway_pool = 0
+                });
 
-            db.Streams.Add(new Stream() {
-                PointsName = "Beczki",
-                channelName = "gragasgoesgym",
-                LastGiveaway = DateTime.UtcNow,
-                Users = new List<User>() {user1, user2, user3}
-            });
-
+                db.Streams.Add(new Bot.Database.SQLite.Stream()
+                {
+                    PointsName = "precelków",
+                    channelName = "preclak",
+                    LastGiveaway = DateTime.UtcNow,
+                    Users = p_users,
+                    PointsCommand = "precelki",
+                    giveaway_pool = 0
+                });
+                db.SaveChanges();
+            }
         }
     }
 
-    
+
 }

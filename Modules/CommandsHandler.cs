@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Bot.Database.SQLite;
 using Bot.Database;
+using Bot.Modules.Commands;
 using System.Linq;
 
 namespace Bot.Modules
@@ -39,18 +40,17 @@ namespace Bot.Modules
                             s_msg[0] = s_msg[0].Replace("!", "");
                             if (s_msg[0] == "points")
                             {
-                                if (Extensions.GetUserIndex(db, channel, sender) != -1)
-                                {
-                                    var stream = db.Streams.Where(x => x.channelName.Equals(channel)).First();
-                                    long points = Extensions.GetUserPoints(db, channel, sender);
-                                    irc.SendPublicChatMessage(channel, $"{sender} posiada {points} {stream.PointsName}.");
-                                }
-
-                                else
-                                    if (ConfigParams.Debug)
-                                    irc.SendPublicChatMessage(channel, $"Points: Case(1): User {sender} not found in {channel}");
+                                Points.UserPointsOnThisChannel(db, irc, channel, sender, msg);
+                            } else
+                            //TODO: swap this to list s_msg[0] in listofPOintscommands
+                            if (s_msg[0] == "precelki")
+                            {
+                                Points.UserPointsOnOtherChannel(db, irc, channel, sender, msg, s_msg[0]);
+                            } else 
+                            if(s_msg[0] == "beczki")
+                            {
+                                Points.UserPointsOnOtherChannel(db, irc, channel, sender, msg, s_msg[0]);
                             }
-
                             break;
                     }
                 }

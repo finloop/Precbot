@@ -21,6 +21,7 @@ namespace Bot.Database.SQLite {
         public string PointsCommand {get;set;}
         public DateTime LastGiveaway {get;set;}
         public string channelName {get;set;}
+        public long giveaway_pool {get;set;}
         
     }
 
@@ -32,6 +33,7 @@ namespace Bot.Database.SQLite {
         public long TotalPoints {get;set;}
         public TimeSpan TotalTimeSpend {get;set;}
         public DateTime LastSeen {get;set;}
-
+        public string Attacker {get;set;}
+        public long pool {get;set;}
     }
 }
