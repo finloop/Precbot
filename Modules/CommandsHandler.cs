@@ -32,7 +32,8 @@ namespace Bot.Modules
                         string sender = vs[0];
                         string channel = vs[1];
                         string msg = vs[2];
-                        msg = msg.ToLower();
+                        msg = msg.ToLower().Replace("@","");
+
 
 
                         if (msg.StartsWith("!"))
@@ -118,6 +119,11 @@ namespace Bot.Modules
                                     {
                                         Utils.GetUserLastSeen(db, irc, channel, sender, channel);
                                     }
+                                    else
+                                    if (s_msg[0] == "help")
+                                    {
+                                        irc.SendPublicChatMessage(channel, "!help [komenda] - użyj aby otrzymać jej opis.");
+                                    }
                                     break;
 
                                 // Check someones elses points
@@ -152,7 +158,29 @@ namespace Bot.Modules
                                     else
                                     if (s_msg[0] == "lastseen")
                                     {
-                                        Utils.GetUserLastSeen(db, irc, channel, sender, s_msg[1]);
+                                        Utils.GetUserLastSeen(db, irc, channel, s_msg[1], channel);
+                                    }
+                                    if (s_msg[0] == "help")
+                                    {
+                                        string comm = s_msg[1];
+                                        if(comm == "points")
+                                            irc.SendPublicChatMessage(channel, "Wyświetla ile masz punktów: !points - twoje, !points [nick]");
+                                        else if(comm == "precelki")
+                                            irc.SendPublicChatMessage(channel, "Wyświetla ile masz precelków: !precelki - twoje, !precelki [nick]");
+                                        else if(comm == "beczki")
+                                            irc.SendPublicChatMessage(channel, "Wyświetla ile masz beczek: !beczki - twoje, !beczki [nick]");
+                                        else if(comm == "watchtime")
+                                            irc.SendPublicChatMessage(channel, "Wyświetla ile czasu spędziłeś na kanale: !watchtime - twój, !watchtime [nick], !watchtime [nick] [kanał]");
+                                        else if(comm == "viewers" || comm == "widzowie")
+                                            irc.SendPublicChatMessage(channel, "Wyświetla listę widzów: !viewers, !widzowie");
+                                        else if(comm == "up" || comm == "uptime")
+                                            irc.SendPublicChatMessage(channel, "Wyświetla ile trwa stream: !beczki - twoje, !beczki [nick]");
+                                        else if(comm == "lastseen")
+                                            irc.SendPublicChatMessage(channel, "Wyświetla kiedy ostatnio byłeś na streamie: !lastseen - ty, !lastseen [nick], !lastseen [nick] [kanał]");
+                                        else if(comm == "ruletka")
+                                            irc.SendPublicChatMessage(channel, "Spróbuj szczęścia i zgarnij punkty: !ruletka [ilość]");
+                                        else if(comm == "donejt" || comm == "donate")
+                                            irc.SendPublicChatMessage(channel, "Przekaż swoje punkty innym: !donejt [nick] [ilość]");
                                     }
                                     break;
                                 case (3):
