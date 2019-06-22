@@ -34,6 +34,30 @@ namespace Bot.Modules.Commands
                     irc.SendPublicChatMessage(channel, $"GetUserWatchtime: stream with {channel} was not found ..");
             }
         }
+        public static void GetUserLastSeen(StreamsContext db, IrcClient irc, string channel, string user, string channelToCheck)
+        {
+            var streams = db.Streams.Where(x => x.channelName.Equals(channelToCheck)).Include(x => x.Users);
+            if (streams.Count() >= 1)
+            {
+                var stream = streams.First();
+                int userId = stream.Users.FindIndex(x => x.Name.Equals(user));
+                if (userId != -1)
+                {
+                    if (ConfigParams.Debug)
+                        irc.SendPublicChatMessage(channel, $"GetUserLastSeen: {user} was found in {stream.channelName}.");
+                    var user_d = stream.Users[userId];
+                    irc.SendPublicChatMessage(channel, $"{user} był ostatnio na kanale {channelToCheck} {user_d.LastSeen} ({(DateTime.Now - user_d.LastSeen).Days} dni temu)");
+                }
+                else
+                    if (ConfigParams.Debug)
+                    irc.SendPublicChatMessage(channel, $"GetUserLastSeen: user was not found in {stream.channelName}.");
+            }
+            else
+            {
+                if (ConfigParams.Debug)
+                    irc.SendPublicChatMessage(channel, $"GetUserLastSeen: stream with {channel} was not found ..");
+            }
+        }
         public static void GetUsersOnChannel(IrcClient irc, string channel)
         {
             string v = "Obecni widzowie to:";

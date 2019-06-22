@@ -54,6 +54,7 @@ namespace Bot
                 Console.WriteLine(msg);
                 CommandsHandler.MessageHandler(irc, msg);
                 Thread.Sleep(20);
+                Console.WriteLine(DateTime.Now.ToString());
             }
         }
 
@@ -99,18 +100,18 @@ namespace Bot
                 var user = new User()
                 {
                     Name = data[0],
-                    Points = long.Parse(data[1]),
-                    TotalPoints = long.Parse((data[2])),
+                    Points = long.Parse(data[1])/2,
+                    TotalPoints = long.Parse((data[2]))/2,
                     TotalTimeSpend = new TimeSpan(0, 0, 0),
-                    LastSeen = DateTime.UtcNow,
+                    LastSeen = DateTime.Now,
                     Attacker = "",
                     pool = 0
                 };
                 var user2 = new User()
                 {
                     Name = data[0],
-                    Points = 0,
-                    TotalPoints = 0,
+                    Points = long.Parse(data[1])/2,
+                    TotalPoints = long.Parse((data[2]))/2,
                     TotalTimeSpend = new TimeSpan(0, 0, 0),
                     LastSeen = DateTime.Now,
                     Attacker = "",
@@ -135,7 +136,7 @@ namespace Bot
                 {
                     PointsName = "precelków",
                     channelName = "preclak",
-                    LastGiveaway = DateTime.UtcNow,
+                    LastGiveaway = DateTime.Now,
                     Users = p_users,
                     PointsCommand = "precelki",
                     giveaway_pool = 0

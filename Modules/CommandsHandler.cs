@@ -113,6 +113,11 @@ namespace Bot.Modules
                                     {
                                         Utils.CheckStreamUptime(irc, channel);
                                     }
+                                    else
+                                    if (s_msg[0] == "lastseen")
+                                    {
+                                        Utils.GetUserLastSeen(db, irc, channel, sender, channel);
+                                    }
                                     break;
 
                                 // Check someones elses points
@@ -144,6 +149,11 @@ namespace Bot.Modules
                                     {
                                         Points.Roulette(db, irc, channel, sender, s_msg[1]);
                                     }
+                                    else
+                                    if (s_msg[0] == "lastseen")
+                                    {
+                                        Utils.GetUserLastSeen(db, irc, channel, sender, s_msg[1]);
+                                    }
                                     break;
                                 case (3):
                                     s_msg[0] = s_msg[0].Replace("!", "");
@@ -161,6 +171,11 @@ namespace Bot.Modules
                                     if (s_msg[0] == "watchtime")
                                     {
                                         Utils.GetUserWatchtime(db, irc, channel, s_msg[1], s_msg[2]);
+                                    }
+                                    else
+                                    if (s_msg[0] == "lastseen")
+                                    {
+                                        Utils.GetUserLastSeen(db, irc, channel, s_msg[1], s_msg[2]);
                                     }
                                     break;
                             }

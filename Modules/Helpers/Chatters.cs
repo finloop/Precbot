@@ -45,7 +45,6 @@ namespace Bot.Modules.Commands.Helpers
                 List<string> p = json.chatters.global_mods;
                 List<string> r = json.chatters.viewers;
                 k.AddRange(l);
-                k.AddRange(l);
                 k.AddRange(m);
                 k.AddRange(n);
                 k.AddRange(o);

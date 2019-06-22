@@ -31,6 +31,7 @@ namespace Bot.Modules.Commands
                 using (var db = new StreamsContext())
                 {
                     var stream = db.Streams.Where(x => x.channelName.Equals(channel)).Include(x => x.Users).First();
+                    stream.LastLive = DateTime.Now;
                     foreach (string viewer in viewers)
                     {
                         int userId = stream.Users.FindIndex(x => x.Name.Equals(viewer));
@@ -49,7 +50,7 @@ namespace Bot.Modules.Commands
                                 Points = 1,
                                 TotalPoints = 1,
                                 TotalTimeSpend = new TimeSpan(0, 0, 0),
-                                LastSeen = DateTime.UtcNow,
+                                LastSeen = DateTime.Now,
                                 Attacker = "",
                                 pool = 0
                             };
