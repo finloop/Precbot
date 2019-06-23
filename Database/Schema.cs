@@ -22,8 +22,9 @@ namespace Bot.Database.SQLite {
         public DateTime LastGiveaway {get;set;}
         public string channelName {get;set;}
         public long giveaway_pool {get;set;}
-        public List<User> giveaway_users {get;set;}
+        public string giveaway_users {get;set;}
         public DateTime LastLive {get;set;}
+        public string WelcomeMessage {get;set;}
     }
 
     public class User 

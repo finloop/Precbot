@@ -29,20 +29,21 @@ namespace Bot.Modules.Commands
             Thread.Sleep(45 * 1000);
             using (var db = new StreamsContext())
             {
-                var stream = db.Streams.Where(x => x.channelName.Equals(channel)).Include(x => x.Users).Include(x => x.giveaway_users).First();
+                var stream = db.Streams.Where(x => x.channelName.Equals(channel)).Include(x => x.Users).First();
                 // END GIVEAWAY
-                if(stream.giveaway_users.Count > 0)
+                List<string> users = new List<string>(stream.giveaway_users.Split(","));
+                if(users.Count > 0)
                 {
                     Random rnd = new Random();
-                    int rand = rnd.Next(0, stream.giveaway_users.Count);
-                    int winner = stream.Users.FindIndex(x => x.Name.Equals(stream.giveaway_users[rand].Name));
+                    int rand = rnd.Next(0, users.Count);
+                    int winner = stream.Users.FindIndex(x => x.Name.Equals(users[rand]));
                     if(winner != -1)
                     {
                         SendSingleIrcMsg(stream.channelName,$"@{stream.Users[winner].Name} wygrał {stream.giveaway_pool} {stream.PointsName} PogChamp");
                         stream.Users[winner].Points += stream.giveaway_pool;
                         stream.Users[winner].TotalPoints += stream.giveaway_pool;
                         stream.giveaway_pool = -1;
-                        stream.giveaway_users = new List<User>();
+                        stream.giveaway_users = "";
                     } 
                 }
                 db.SaveChanges();

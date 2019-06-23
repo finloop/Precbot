@@ -16,7 +16,10 @@ namespace Bot.Modules.Commands
             int userIndex = stream.Users.FindIndex(x => x.Name.Equals(user));
             if(stream.giveaway_pool > 0 && userIndex != -1)
             {
-                stream.giveaway_users.Add(stream.Users[userIndex]);
+                if(stream.giveaway_users == "")
+                    stream.giveaway_users += stream.Users[userIndex].Name;
+                else 
+                    stream.giveaway_users += "," + stream.Users[userIndex].Name;
                 if(ConfigParams.Debug)
                     irc.SendPublicChatMessage(channel, $"TryToEnterGiveaway: {user} was added to giveaway pool.");
             }
@@ -67,7 +70,7 @@ namespace Bot.Modules.Commands
                         {
                             stream.LastGiveaway = DateTime.Now;
                             stream.giveaway_pool = giveaway_points;
-                            stream.giveaway_users = new List<User>();
+                            stream.giveaway_users = "";
                             Thread giveaway_thread = new Thread(() => Workers.StartGiveawayTimer(channel));
                         }
                     }
