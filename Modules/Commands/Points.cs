@@ -13,9 +13,10 @@ namespace Bot.Modules.Commands
         public static void TryToEnterGiveaway(StreamsContext db, IrcClient irc, string channel, string user, string msg)
         {
             var stream = db.Streams.Where(x => x.channelName.Equals(channel)).Include(x => x.Users).Include(x => x.giveaway_users).First();
-            if(stream.giveaway_pool > 0 && !stream.giveaway_users.Contains(user))
+            int userIndex = stream.Users.FindIndex(x => x.Name.Equals(user));
+            if(stream.giveaway_pool > 0 && userIndex != -1)
             {
-                stream.giveaway_users.Add(user);
+                stream.giveaway_users.Add(stream.Users[userIndex]);
                 if(ConfigParams.Debug)
                     irc.SendPublicChatMessage(channel, $"TryToEnterGiveaway: {user} was added to giveaway pool.");
             }
@@ -66,7 +67,7 @@ namespace Bot.Modules.Commands
                         {
                             stream.LastGiveaway = DateTime.Now;
                             stream.giveaway_pool = giveaway_points;
-                            stream.giveaway_users = new List<string>();
+                            stream.giveaway_users = new List<User>();
                             Thread giveaway_thread = new Thread(() => Workers.StartGiveawayTimer(channel));
                         }
                     }

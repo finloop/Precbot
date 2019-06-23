@@ -35,14 +35,14 @@ namespace Bot.Modules.Commands
                 {
                     Random rnd = new Random();
                     int rand = rnd.Next(0, stream.giveaway_users.Count);
-                    int winner = stream.Users.FindIndex(x => x.Name.Equals(stream.giveaway_users[rand]));
+                    int winner = stream.Users.FindIndex(x => x.Name.Equals(stream.giveaway_users[rand].Name));
                     if(winner != -1)
                     {
                         SendSingleIrcMsg(stream.channelName,$"@{stream.Users[winner].Name} wygrał {stream.giveaway_pool} {stream.PointsName} PogChamp");
                         stream.Users[winner].Points += stream.giveaway_pool;
                         stream.Users[winner].TotalPoints += stream.giveaway_pool;
                         stream.giveaway_pool = -1;
-                        stream.giveaway_users = new List<string>();
+                        stream.giveaway_users = new List<User>();
                     } 
                 }
                 db.SaveChanges();
