@@ -24,7 +24,7 @@ namespace Bot.Database
             int userIndex = stream.Users.FindIndex(x => x.Name.Equals(username));
             return userIndex;
         }
-        // The dont work if user is not found
+        // This doesnt work if user is not found
         public static long GetUserPoints(StreamsContext db, string channelName, string username)
         {
             var stream = db.Streams.Where(x => x.channelName.Equals(channelName)).Include(s => s.Users).First();

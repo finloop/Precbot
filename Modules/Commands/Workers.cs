@@ -12,11 +12,47 @@ namespace Bot.Modules.Commands
     public static class Workers
     {
         public static Thread points_thread;
+        private static void SendSingleIrcMsg(string channel = "gragasgoesgym", string msg = "test test test 123")
+        {
+            Console.WriteLine("xxxxxxxxxxxxx");
+            Config.Read();
+            List<string> channels = new List<string>();
+            using (var db = new StreamsContext())
+            {
+                channels = db.Streams.Where(x => x.channelName != "").Select(p => p.channelName).ToList();
+            }
+            IrcClient irc = new IrcClient(ConfigParams.ip, ConfigParams.port, ConfigParams.userName, ConfigParams.TwitchAuth, channels);
+            irc.SendPublicChatMessage(channel, msg);
+        }
+        public static void StartGiveawayTimer(string channel)
+        {
+            Thread.Sleep(45 * 1000);
+            using (var db = new StreamsContext())
+            {
+                var stream = db.Streams.Where(x => x.channelName.Equals(channel)).Include(x => x.Users).Include(x => x.giveaway_users).First();
+                // END GIVEAWAY
+                if(stream.giveaway_users.Count > 0)
+                {
+                    Random rnd = new Random();
+                    int rand = rnd.Next(0, stream.giveaway_users.Count);
+                    int winner = stream.Users.FindIndex(x => x.Name.Equals(stream.giveaway_users[rand]));
+                    if(winner != -1)
+                    {
+                        SendSingleIrcMsg(stream.channelName,$"@{stream.Users[winner].Name} wygrał {stream.giveaway_pool} {stream.PointsName} PogChamp");
+                        stream.Users[winner].Points += stream.giveaway_pool;
+                        stream.Users[winner].TotalPoints += stream.giveaway_pool;
+                        stream.giveaway_pool = -1;
+                        stream.giveaway_users = new List<string>();
+                    } 
+                }
+                db.SaveChanges();
+            }
+        }
         public static void BackgroundWorker5min()
         {
             while (true)
             {
-                Console.WriteLine($"____________Trying to add points... + {DateTime.Now.ToShortTimeString()}");
+                Console.WriteLine($"Trying to add points... + {DateTime.Now.ToShortTimeString()}");
                 //TODO: get channels from db
                 AddPointsIfStreamIsRunning("preclak");
                 AddPointsIfStreamIsRunning("gragasgoesgym");

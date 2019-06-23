@@ -38,12 +38,12 @@ namespace Bot.Modules
 
                         if (msg.StartsWith("!"))
                         {
+                            msg = msg.Replace("!","");   
                             List<string> s_msg = new List<string>(msg.Split(" "));
                             switch (s_msg.Count)
                             {
                                 // Show your points depending on what was send
                                 case (1):
-                                    s_msg[0] = s_msg[0].Replace("!", "");
                                     if (s_msg[0] == "points")
                                     {
                                         Points.UserPointsOnThisChannel(db, irc, channel, sender, msg);
@@ -120,9 +120,15 @@ namespace Bot.Modules
                                         Utils.GetUserLastSeen(db, irc, channel, sender, channel);
                                     }
                                     else
+                                    if (s_msg[0] == "join")
+                                    {
+                                        Points.TryToEnterGiveaway(db, irc, channel, sender, msg);
+                                    }
+                                    else
                                     if (s_msg[0] == "help")
                                     {
-                                        irc.SendPublicChatMessage(channel, "!help [komenda] - użyj aby otrzymać jej opis.");
+                                        irc.SendPublicChatMessage(channel, "!help [komenda] - użyj aby otrzymać jej opis. Dostępne: !points, !precelki, "+
+                                        "!beczki, !watchtime, !widzowie, !matma, !halp, !salto, !bot3, !monika, !znikam, !uptime, !lastseen, !ruletka, !giveaway, !join, !donejt");
                                     }
                                     break;
 
@@ -160,6 +166,11 @@ namespace Bot.Modules
                                     {
                                         Utils.GetUserLastSeen(db, irc, channel, s_msg[1], channel);
                                     }
+                                    else
+                                    if (s_msg[0] == "giveaway")
+                                    {
+                                        Points.TryToStartGiveaway(db, irc, channel, sender, msg);
+                                    }
                                     if (s_msg[0] == "help")
                                     {
                                         string comm = s_msg[1];
@@ -181,6 +192,10 @@ namespace Bot.Modules
                                             irc.SendPublicChatMessage(channel, "Spróbuj szczęścia i zgarnij punkty: !ruletka [ilość], !ruletka [ilość] [kanał]");
                                         else if(comm == "donejt" || comm == "donate")
                                             irc.SendPublicChatMessage(channel, "Przekaż swoje punkty innym: !donejt [nick] [ilość], !donate [nick] [ilość]");
+                                        else if(comm == "giveaway")
+                                            irc.SendPublicChatMessage(channel, "Rozdaj swoje punkty losowej osobie: !giveaway [ilość]");
+                                        else if(comm == "join")
+                                            irc.SendPublicChatMessage(channel, "Dołączasz do loterii: !join");
                                     }
                                     break;
                                 case (3):

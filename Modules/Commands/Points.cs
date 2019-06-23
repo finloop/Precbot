@@ -4,11 +4,82 @@ using Bot.Database.SQLite;
 using Bot.Database;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using System.Threading;
 
 namespace Bot.Modules.Commands
 {
     public static class Points
     {
+        public static void TryToEnterGiveaway(StreamsContext db, IrcClient irc, string channel, string user, string msg)
+        {
+            var stream = db.Streams.Where(x => x.channelName.Equals(channel)).Include(x => x.Users).Include(x => x.giveaway_users).First();
+            if(stream.giveaway_pool > 0 && !stream.giveaway_users.Contains(user))
+            {
+                stream.giveaway_users.Add(user);
+                if(ConfigParams.Debug)
+                    irc.SendPublicChatMessage(channel, $"TryToEnterGiveaway: {user} was added to giveaway pool.");
+            }
+        }
+        // !giveaway 200
+        public static void TryToStartGiveaway(StreamsContext db, IrcClient irc, string channel, string user, string msg)
+        {
+            if (Extensions.CheckIfStreamExists(db, channel))
+            {
+                var stream = db.Streams.Where(x => x.channelName.Equals(channel)).Include(x => x.Users).Include(x => x.giveaway_users).First();
+                int senderId = stream.Users.FindIndex(x => x.Name.Equals(user));
+                string amount = msg.Split(" ")[1];
+                long giveaway_points = -1;
+
+                if (senderId != -1)
+                {
+                    long senderPoints = stream.Users[senderId].Points;
+
+                    if (amount.Equals("all"))
+                    {
+                        giveaway_points = senderPoints;
+                    }
+                    else
+                    if (amount.Contains("%"))
+                    {
+                        amount = amount.Replace("%", "");
+                        int procent = int.Parse(amount);
+                        if (procent > 0 && procent <= 100)
+                        {
+                            float multpler = (float)procent / 100;
+                            giveaway_points = (long)(senderPoints * multpler);
+                        }
+                    }
+                    else
+                    {
+                        long points = long.Parse(amount);
+                        if (points > 0 && senderPoints >= points)
+                        {
+                            giveaway_points = points;
+                        }
+                    }
+
+                    if (giveaway_points > 0)
+                    {
+                        // LOGIC HERE
+                        TimeSpan timeSinceLastGiveaway = DateTime.Now - stream.LastGiveaway;
+                        if(timeSinceLastGiveaway.TotalSeconds > 120) 
+                        {
+                            stream.LastGiveaway = DateTime.Now;
+                            stream.giveaway_pool = giveaway_points;
+                            stream.giveaway_users = new List<string>();
+                            Thread giveaway_thread = new Thread(() => Workers.StartGiveawayTimer(channel));
+                        }
+                    }
+                    else
+                        if (ConfigParams.Debug)
+                        irc.SendPublicChatMessage(channel, $"GivePointsFromSenderToUser: {user} does not have enough points.");
+                }
+                else
+                    if (ConfigParams.Debug)
+                    irc.SendPublicChatMessage(channel, $"GivePointsFromSenderToUser: {user} was not found in this channel.");
+
+            }
+        }
         //TODO: Find a better name for this like 'for' instead of on...
         public static void UserPointsOnThisChannel(StreamsContext db, IrcClient irc, string channel, string user, string msg)
         {

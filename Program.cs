@@ -29,9 +29,13 @@ namespace Bot
             // update 'User' set Name = "lordozopl" where Name = "Lordozopl"
 
             //RebuildDatabase();
+
             Config.Read();
             StartWorkers();
+            //Console.WriteLine(".......");
+            //var t = Task.Run(() => Workers.SendSingleIrcMsg());
             StartBot();
+
 
 
             //Console.WriteLine(ConfigParams.Debug);
