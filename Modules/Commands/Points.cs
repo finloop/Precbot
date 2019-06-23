@@ -63,21 +63,48 @@ namespace Bot.Modules.Commands
                 var stream = db.Streams.Where(x => x.channelName.Equals(channel)).Include(x => x.Users).First();
                 int senderId = stream.Users.FindIndex(x => x.Name.Equals(sender));
                 int recivId = stream.Users.FindIndex(x => x.Name.Equals(reciv));
-                long amount = long.Parse(msg[2]);
+                //long amount = long.Parse(msg[2]);
+                string amount = msg[2];
+                long donate_points = -1;
+
                 if (senderId != -1)
                 {
                     if (recivId != -1)
                     {
                         long senderPoints = stream.Users[senderId].Points;
 
-                        if (senderPoints >= amount && amount > 0)
+                        if (amount.Equals("all"))
+                        {
+                            donate_points = senderPoints;
+                        }
+                        else
+                        if (amount.Contains("%"))
+                        {
+                            amount = amount.Replace("%", "");
+                            int procent = int.Parse(amount);
+                            if (procent > 0 && procent <= 100)
+                            {
+                                float multpler = (float)procent / 100;
+                                donate_points = (long)(senderPoints * multpler);
+                            }
+                        }
+                        else
+                        {
+                            long points = long.Parse(amount);
+                            if (points > 0 && senderPoints >= points)
+                            {
+                                donate_points = points;
+                            }
+                        }
+
+                        if (donate_points > 0)
                         {
                             var sender_user = stream.Users[senderId];
                             var reciv_user = stream.Users[recivId];
-                            sender_user.Points -= amount;
-                            reciv_user.Points += amount;
-                            reciv_user.TotalPoints += amount;
-                            irc.SendPublicChatMessage(channel, $"{sender} przekazał {amount} {stream.PointsName} {reciv}");
+                            sender_user.Points -= donate_points;
+                            reciv_user.Points += donate_points;
+                            reciv_user.TotalPoints += donate_points;
+                            irc.SendPublicChatMessage(channel, $"{sender} przekazał {donate_points} {stream.PointsName} {reciv}");
                         }
                         else
                             if (ConfigParams.Debug)
@@ -94,11 +121,11 @@ namespace Bot.Modules.Commands
 
             }
         }
-        public static void Roulette(StreamsContext db, IrcClient irc, string channel, string sender, string amount)
+        public static void Roulette(StreamsContext db, IrcClient irc, string channel, string sender, string amount, string pointsChannel)
         {
-            if (Extensions.CheckIfStreamExists(db, channel))
+            if (Extensions.CheckIfStreamExists(db, pointsChannel))
             {
-                var stream = db.Streams.Where(x => x.channelName.Equals(channel)).Include(x => x.Users).First();
+                var stream = db.Streams.Where(x => x.channelName.Equals(pointsChannel)).Include(x => x.Users).First();
                 int senderId = stream.Users.FindIndex(x => x.Name.Equals(sender));
                 if (senderId != -1)
                 {
@@ -116,7 +143,7 @@ namespace Bot.Modules.Commands
                         int procent = int.Parse(amount);
                         if (procent > 0 && procent <= 100)
                         {
-                            float multpler = (float) procent / 100;
+                            float multpler = (float)procent / 100;
                             roulette_points = (long)(sender_user.Points * multpler);
                         }
                     }
@@ -157,7 +184,7 @@ namespace Bot.Modules.Commands
             }
             else
                     if (ConfigParams.Debug)
-                irc.SendPublicChatMessage(channel, $"GivePointsFromSenderToUser: {sender} was not found in this channel.");
+                irc.SendPublicChatMessage(channel, $"GivePointsFromSenderToUser: {sender} was not found in {pointsChannel}.");
 
         }
 

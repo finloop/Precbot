@@ -25,42 +25,41 @@ namespace Bot.Modules.Commands
         }
         public static void AddPointsIfStreamIsRunning(string channel)
         {
-            if (CheckStream.isRunning(channel) || ConfigParams.Debug)
+            List<string> viewers = Chatters.GetViewers(channel);
+            using (var db = new StreamsContext())
             {
-                List<string> viewers = Chatters.GetViewers(channel);
-                using (var db = new StreamsContext())
+                var stream = db.Streams.Where(x => x.channelName.Equals(channel)).Include(x => x.Users).First();
+                stream.LastLive = DateTime.Now;
+                foreach (string viewer in viewers)
                 {
-                    var stream = db.Streams.Where(x => x.channelName.Equals(channel)).Include(x => x.Users).First();
-                    stream.LastLive = DateTime.Now;
-                    foreach (string viewer in viewers)
+                    int userId = stream.Users.FindIndex(x => x.Name.Equals(viewer));
+                    if (userId != -1)
                     {
-                        int userId = stream.Users.FindIndex(x => x.Name.Equals(viewer));
-                        if (userId != -1)
+                        if (CheckStream.isRunning(channel) || ConfigParams.Debug)
                         {
                             stream.Users[userId].Points += 1;
                             stream.Users[userId].TotalPoints += 1;
-                            stream.Users[userId].LastSeen = DateTime.Now;
                             stream.Users[userId].TotalTimeSpend += TimeSpan.FromMinutes(5);
                         }
-                        else
-                        {
-                            var user = new User()
-                            {
-                                Name = viewer,
-                                Points = 1,
-                                TotalPoints = 1,
-                                TotalTimeSpend = new TimeSpan(0, 0, 0),
-                                LastSeen = DateTime.Now,
-                                Attacker = "",
-                                pool = 0
-                            };
-                            stream.Users.Add(user);
-                        }
-
+                        stream.Users[userId].LastSeen = DateTime.Now;
                     }
-                    db.SaveChanges();
-                }
+                    else
+                    {
+                        var user = new User()
+                        {
+                            Name = viewer,
+                            Points = 1,
+                            TotalPoints = 1,
+                            TotalTimeSpend = new TimeSpan(0, 0, 0),
+                            LastSeen = DateTime.Now,
+                            Attacker = "",
+                            pool = 0
+                        };
+                        stream.Users.Add(user);
+                    }
 
+                }
+                db.SaveChanges();
             }
         }
     }

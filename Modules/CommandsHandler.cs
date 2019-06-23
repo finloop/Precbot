@@ -153,7 +153,7 @@ namespace Bot.Modules
                                     // ruletka amount
                                     if (s_msg[0] == "ruletka")
                                     {
-                                        Points.Roulette(db, irc, channel, sender, s_msg[1]);
+                                        Points.Roulette(db, irc, channel, sender, s_msg[1], channel);
                                     }
                                     else
                                     if (s_msg[0] == "lastseen")
@@ -178,9 +178,9 @@ namespace Bot.Modules
                                         else if(comm == "lastseen")
                                             irc.SendPublicChatMessage(channel, "Wyświetla kiedy ostatnio byłeś na streamie: !lastseen - ty, !lastseen [nick], !lastseen [nick] [kanał]");
                                         else if(comm == "ruletka")
-                                            irc.SendPublicChatMessage(channel, "Spróbuj szczęścia i zgarnij punkty: !ruletka [ilość]");
+                                            irc.SendPublicChatMessage(channel, "Spróbuj szczęścia i zgarnij punkty: !ruletka [ilość], !ruletka [ilość] [kanał]");
                                         else if(comm == "donejt" || comm == "donate")
-                                            irc.SendPublicChatMessage(channel, "Przekaż swoje punkty innym: !donejt [nick] [ilość]");
+                                            irc.SendPublicChatMessage(channel, "Przekaż swoje punkty innym: !donejt [nick] [ilość], !donate [nick] [ilość]");
                                     }
                                     break;
                                 case (3):
@@ -204,6 +204,11 @@ namespace Bot.Modules
                                     if (s_msg[0] == "lastseen")
                                     {
                                         Utils.GetUserLastSeen(db, irc, channel, s_msg[1], s_msg[2]);
+                                    }
+                                    // !ruletka [ilość] [kanał]
+                                    if (s_msg[0] == "ruletka")
+                                    {
+                                        Points.Roulette(db, irc, channel, sender, s_msg[1], s_msg[2]);
                                     }
                                     break;
                             }
