@@ -14,7 +14,6 @@ namespace Bot.Modules.Commands
         public static Thread points_thread;
         private static void SendSingleIrcMsg(string channel = "gragasgoesgym", string msg = "test test test 123")
         {
-            Console.WriteLine("xxxxxxxxxxxxx");
             Config.Read();
             List<string> channels = new List<string>();
             using (var db = new StreamsContext())
@@ -27,6 +26,8 @@ namespace Bot.Modules.Commands
         public static void StartGiveawayTimer(string channel)
         {
             Thread.Sleep(45 * 1000);
+
+
             using (var db = new StreamsContext())
             {
                 var stream = db.Streams.Where(x => x.channelName.Equals(channel)).Include(x => x.Users).First();
@@ -34,11 +35,13 @@ namespace Bot.Modules.Commands
                 List<string> users = new List<string>(stream.giveaway_users.Split(","));
                 if(users.Count > 0)
                 {
+
                     Random rnd = new Random();
                     int rand = rnd.Next(0, users.Count);
                     int winner = stream.Users.FindIndex(x => x.Name.Equals(users[rand]));
                     if(winner != -1)
                     {
+
                         SendSingleIrcMsg(stream.channelName,$"@{stream.Users[winner].Name} wygrał {stream.giveaway_pool} {stream.PointsName} PogChamp");
                         stream.Users[winner].Points += stream.giveaway_pool;
                         stream.Users[winner].TotalPoints += stream.giveaway_pool;

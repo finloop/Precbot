@@ -12,7 +12,7 @@ namespace Bot.Modules.Commands
     {
         public static void TryToEnterGiveaway(StreamsContext db, IrcClient irc, string channel, string user, string msg)
         {
-            var stream = db.Streams.Where(x => x.channelName.Equals(channel)).Include(x => x.Users).Include(x => x.giveaway_users).First();
+            var stream = db.Streams.Where(x => x.channelName.Equals(channel)).Include(x => x.Users).First();
             int userIndex = stream.Users.FindIndex(x => x.Name.Equals(user));
             if(stream.giveaway_pool > 0 && userIndex != -1)
             {
@@ -29,11 +29,10 @@ namespace Bot.Modules.Commands
         {
             if (Extensions.CheckIfStreamExists(db, channel))
             {
-                var stream = db.Streams.Where(x => x.channelName.Equals(channel)).Include(x => x.Users).Include(x => x.giveaway_users).First();
+                var stream = db.Streams.Where(x => x.channelName.Equals(channel)).Include(x => x.Users).First();
                 int senderId = stream.Users.FindIndex(x => x.Name.Equals(user));
                 string amount = msg.Split(" ")[1];
                 long giveaway_points = -1;
-
                 if (senderId != -1)
                 {
                     long senderPoints = stream.Users[senderId].Points;
@@ -71,7 +70,13 @@ namespace Bot.Modules.Commands
                             stream.LastGiveaway = DateTime.Now;
                             stream.giveaway_pool = giveaway_points;
                             stream.giveaway_users = "";
+                            stream.Users[senderId].Points -= giveaway_points;
+
+                            irc.SendPublicChatMessage(channel, $"@{user} zafundował wam giveaway {giveaway_points} {stream.PointsName}. Wpisz !join aby dołączyć!");
                             Thread giveaway_thread = new Thread(() => Workers.StartGiveawayTimer(channel));
+                            giveaway_thread.IsBackground = true;
+                            giveaway_thread.Start();
+
                         }
                     }
                     else
