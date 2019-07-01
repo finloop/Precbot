@@ -136,11 +136,11 @@ namespace Bot.Modules.Commands
             }
         }
         // !donejt user 100
-        public static void GivePointsFromSenderToReciv(StreamsContext db, IrcClient irc, string channel, string sender, string reciv, List<string> msg)
+        public static void GivePointsFromSenderToReciv(StreamsContext db, IrcClient irc, string channel, string sender, string reciv, List<string> msg, string targetChannel)
         {
-            if (Extensions.CheckIfStreamExists(db, channel))
+            if (Extensions.CheckIfStreamExists(db, targetChannel))
             {
-                var stream = db.Streams.Where(x => x.channelName.Equals(channel)).Include(x => x.Users).First();
+                var stream = db.Streams.Where(x => x.channelName.Equals(targetChannel)).Include(x => x.Users).First();
                 int senderId = stream.Users.FindIndex(x => x.Name.Equals(sender));
                 int recivId = stream.Users.FindIndex(x => x.Name.Equals(reciv));
                 //long amount = long.Parse(msg[2]);

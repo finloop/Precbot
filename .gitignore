@@ -2,6 +2,7 @@ Migrations
 obj
 bin
 streams.db
+streams_old.db
 .vscode
 config.json
 POINTS.txt

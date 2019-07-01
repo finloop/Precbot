@@ -191,7 +191,7 @@ namespace Bot.Modules
                                         else if(comm == "ruletka")
                                             irc.SendPublicChatMessage(channel, "Spróbuj szczęścia i zgarnij punkty: !ruletka [ilość], !ruletka [ilość] [kanał]");
                                         else if(comm == "donejt" || comm == "donate")
-                                            irc.SendPublicChatMessage(channel, "Przekaż swoje punkty innym: !donejt [nick] [ilość], !donate [nick] [ilość]");
+                                            irc.SendPublicChatMessage(channel, "Przekaż swoje punkty innym: !donejt [nick] [ilość], !donate [nick] [ilość], !donate [nick] [ilość] [kanał], !donejt [nick] [ilość] [kanał]");
                                         else if(comm == "giveaway")
                                             irc.SendPublicChatMessage(channel, "Rozdaj swoje punkty losowej osobie: !giveaway [ilość]");
                                         else if(comm == "join")
@@ -202,12 +202,12 @@ namespace Bot.Modules
                                     s_msg[0] = s_msg[0].Replace("!", "");
                                     if (s_msg[0] == "donejt")
                                     {
-                                        Points.GivePointsFromSenderToReciv(db, irc, channel, sender, s_msg[1], s_msg);
+                                        Points.GivePointsFromSenderToReciv(db, irc, channel, sender, s_msg[1], s_msg, channel);
                                     }
                                     else
                                     if (s_msg[0] == "donate")
                                     {
-                                        Points.GivePointsFromSenderToReciv(db, irc, channel, sender, s_msg[1], s_msg);
+                                        Points.GivePointsFromSenderToReciv(db, irc, channel, sender, s_msg[1], s_msg, channel);
                                     }
                                     else
                                     // watchtime who where
@@ -224,6 +224,20 @@ namespace Bot.Modules
                                     if (s_msg[0] == "ruletka")
                                     {
                                         Points.Roulette(db, irc, channel, sender, s_msg[1], s_msg[2]);
+                                    }
+                                    break;
+                                case(4):
+                                    //    0       1     2        3 
+                                    // !donejt preclak 100 gragasgoesgym
+                                    s_msg[0] = s_msg[0].Replace("!", "");
+                                    if (s_msg[0] == "donejt")
+                                    {
+                                        Points.GivePointsFromSenderToReciv(db, irc, channel, sender, s_msg[1], s_msg, s_msg[3]);
+                                    }
+                                    else
+                                    if (s_msg[0] == "donate")
+                                    {
+                                        Points.GivePointsFromSenderToReciv(db, irc, channel, sender, s_msg[1], s_msg, s_msg[3]);
                                     }
                                     break;
                             }
