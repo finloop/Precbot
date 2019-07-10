@@ -236,7 +236,7 @@ namespace Bot.Modules
                                     else
                                     if (s_msg[0] == "ranking")
                                     {
-                                        Utils.GetUserRank(db, irc, channel, s_msg[0], s_msg[1]);
+                                        Utils.GetUserRank(db, irc, channel, s_msg[1], s_msg[2]);
                                     }
                                     else
                                     // !ruletka [ilość] [kanał]

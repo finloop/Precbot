@@ -18,6 +18,18 @@ namespace Bot.Modules.Commands
                 var stream = streams.First();
                 stream.Users.Sort((x,y)=> y.Points.CompareTo(x.Points));
                 int userId = stream.Users.FindIndex(x => x.Name.Equals(user));
+                if(user == "top5" && stream.Users.Count > 5)
+                {
+                    string userList = "";
+                    for(int i = 0; i < 5; i++)
+                    {
+                        if(i == 4)
+                            userList += $"{i+1}. {stream.Users[i].Name}: {stream.Users[i].Points}.";
+                        else
+                            userList += $"{i+1}. {stream.Users[i].Name}: {stream.Users[i].Points}, ";
+                    }
+                    irc.SendPublicChatMessage(channel, $"Top 5 kanału {channelToCheck}: {userList}");
+                }
                 if (userId != -1)
                 {
                     if (ConfigParams.Debug)
