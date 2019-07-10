@@ -22,7 +22,7 @@ namespace Bot.Modules.Commands
                     if (ConfigParams.Debug)
                         irc.SendPublicChatMessage(channel, $"GetUserWatchtime: {user} was found in {stream.channelName}.");
                     var user_d = stream.Users[userId];
-                    irc.SendPublicChatMessage(channel, $"{user} oglądał {channelToCheck} przez {user_d.TotalTimeSpend.Hours} godzin {user_d.TotalTimeSpend.Minutes} minut");
+                    irc.SendPublicChatMessage(channel, $"{user} oglądał {channelToCheck} przez {user_d.TotalTimeSpend.Days} dni {user_d.TotalTimeSpend.Hours} godzin {user_d.TotalTimeSpend.Minutes} minut");
                 }
                 else
                     if (ConfigParams.Debug)
