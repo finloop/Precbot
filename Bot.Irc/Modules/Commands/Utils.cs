@@ -10,6 +10,32 @@ namespace Bot.Modules.Commands
 {
     public static class Utils
     {
+        public static void GetUserRank(StreamsContext db, IrcClient irc, string channel, string user, string channelToCheck)
+        {
+            var streams = db.Streams.Where(x => x.channelName.Equals(channelToCheck)).Include(x => x.Users);
+            if (streams.Count() >= 1)
+            {
+                var stream = streams.First();
+                stream.Users.Sort((x,y)=> y.Points.CompareTo(x.Points));
+                int userId = stream.Users.FindIndex(x => x.Name.Equals(user));
+                if (userId != -1)
+                {
+                    if (ConfigParams.Debug)
+                        irc.SendPublicChatMessage(channel, $"GetUserRank: {user} was found in {stream.channelName}.");
+                    var user_d = stream.Users[userId];
+                    
+                    irc.SendPublicChatMessage(channel, $"{user} jest {userId+1} w rankingu.");
+                }
+                else
+                    if (ConfigParams.Debug)
+                    irc.SendPublicChatMessage(channel, $"GetUserRank: user was not found in {stream.channelName}.");
+            }
+            else
+            {
+                if (ConfigParams.Debug)
+                    irc.SendPublicChatMessage(channel, $"GetUserRank: stream with {channel} was not found ..");
+            }
+        }
         public static void GetUserWatchtime(StreamsContext db, IrcClient irc, string channel, string user, string channelToCheck)
         {
             var streams = db.Streams.Where(x => x.channelName.Equals(channelToCheck)).Include(x => x.Users);

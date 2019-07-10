@@ -125,6 +125,11 @@ namespace Bot.Modules
                                         Points.TryToEnterGiveaway(db, irc, channel, sender, msg);
                                     }
                                     else
+                                    if (s_msg[0] == "ranking")
+                                    {
+                                        Utils.GetUserRank(db, irc, channel, sender, channel);
+                                    }
+                                    else
                                     if (s_msg[0] == "help")
                                     {
                                         irc.SendPublicChatMessage(channel, "!help [komenda] - użyj aby otrzymać jej opis. Dostępne: !points, !precelki, "+
@@ -171,6 +176,12 @@ namespace Bot.Modules
                                     {
                                         Points.TryToStartGiveaway(db, irc, channel, sender, msg);
                                     }
+                                    else
+                                    if (s_msg[0] == "ranking")
+                                    {
+                                        Utils.GetUserRank(db, irc, channel, s_msg[1], channel);
+                                    }
+                                    else
                                     if (s_msg[0] == "help")
                                     {
                                         string comm = s_msg[1];
@@ -196,6 +207,8 @@ namespace Bot.Modules
                                             irc.SendPublicChatMessage(channel, "Rozdaj swoje punkty losowej osobie: !giveaway [ilość]");
                                         else if(comm == "join")
                                             irc.SendPublicChatMessage(channel, "Dołączasz do loterii: !join");
+                                        else if(comm == "ranking")
+                                            irc.SendPublicChatMessage(channel, "Wyświetla który jesteś w rankngu: !ranking, !ranking [nick], !ranking [nick] [kanał]");
                                     }
                                     break;
                                 case (3):
@@ -220,6 +233,12 @@ namespace Bot.Modules
                                     {
                                         Utils.GetUserLastSeen(db, irc, channel, s_msg[1], s_msg[2]);
                                     }
+                                    else
+                                    if (s_msg[0] == "ranking")
+                                    {
+                                        Utils.GetUserRank(db, irc, channel, s_msg[0], s_msg[1]);
+                                    }
+                                    else
                                     // !ruletka [ilość] [kanał]
                                     if (s_msg[0] == "ruletka")
                                     {
