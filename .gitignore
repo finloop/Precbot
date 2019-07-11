@@ -7,3 +7,5 @@ streams_old.db
 config.json
 POINTS.txt
 Bot.code-workspace
+Bot.Database/postgres_data
+Bot.Migrations/streams copy.db

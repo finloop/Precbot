@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System;
 
-namespace Bot.Database.SQLite {
+namespace Bot.Database_old.SQLite {
     public class StreamsContext : DbContext 
     {
         public DbSet<Stream> Streams {get;set;}

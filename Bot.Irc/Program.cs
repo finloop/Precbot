@@ -126,7 +126,7 @@ namespace Bot
             }
             using (var db = new StreamsContext())
             {
-                db.Streams.Add(new Bot.Database.SQLite.Stream()
+                db.Streams.Add(new Bot.Database.Stream()
                 {
                     PointsName = "beczek",
                     channelName = "gragasgoesgym",
@@ -136,7 +136,7 @@ namespace Bot
                     giveaway_pool = 0
                 });
 
-                db.Streams.Add(new Bot.Database.SQLite.Stream()
+                db.Streams.Add(new Bot.Database.Stream()
                 {
                     PointsName = "precelków",
                     channelName = "preclak",

@@ -14,5 +14,4 @@ namespace Bot.Database.SQLite {
         }
     }
     //TODO: Add phonetic name for points.
-
 }
