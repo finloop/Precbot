@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System;
 
 
-namespace Bot.Database.SQLite {
+namespace Bot.Database.SQLite_ {
     public class StreamsContext : DbContext 
     {
         public DbSet<Stream> Streams {get;set;}

@@ -1,6 +1,6 @@
 ﻿using System;
 using Bot.Modules;
-using Bot.Database.SQLite;
+using Bot.Database.PostgreSQL;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;

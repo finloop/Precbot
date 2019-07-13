@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using Bot.Database.SQLite;
+using Bot.Database.PostgreSQL;
 using Bot.Database;
 using Bot.Modules.Commands;
 using System.Linq;
@@ -58,6 +58,22 @@ namespace Bot.Modules
                                     if (s_msg[0] == "beczki")
                                     {
                                         Points.UserPointsOnOtherChannel(db, irc, channel, sender, msg, s_msg[0]);
+                                    }
+                                    else
+                                    if (s_msg[0] == "pointsall")
+                                    {
+                                        Points.UserTotalPointsOnThisChannel(db, irc, channel, sender, msg);
+                                    }
+                                    else
+                                    ////
+                                    if (s_msg[0] == "precelkiall")
+                                    {
+                                        Points.UserTotalPointsOnOtherChannel(db, irc, channel, sender, msg, s_msg[0]);
+                                    }
+                                    else
+                                    if (s_msg[0] == "beczkiall")
+                                    {
+                                        Points.UserTotalPointsOnOtherChannel(db, irc, channel, sender, msg, s_msg[0]);
                                     }
                                     else
                                     if (s_msg[0] == "watchtime")
@@ -133,7 +149,8 @@ namespace Bot.Modules
                                     if (s_msg[0] == "help")
                                     {
                                         irc.SendPublicChatMessage(channel, "!help [komenda] - użyj aby otrzymać jej opis. Dostępne: !points, !precelki, "+
-                                        "!beczki, !watchtime, !widzowie, !matma, !halp, !salto, !bot3, !monika, !znikam, !uptime, !lastseen, !ruletka, !giveaway, !join, !donejt");
+                                        "!beczki, !watchtime, !widzowie, !matma, !halp, !salto, !bot3, !monika, !znikam, !uptime, !lastseen, !ruletka, !giveaway, !join, !donejt, !ranking, !pointsall" +
+                                        " !precelkiall, !beczkiall");
                                     }
                                     break;
 
@@ -154,6 +171,22 @@ namespace Bot.Modules
                                     if (s_msg[0] == "beczki")
                                     {
                                         Points.UserPointsOnOtherChannel(db, irc, channel, s_msg[1], msg, s_msg[0]);
+                                    }
+                                    else
+                                    if (s_msg[0] == "pointsall")
+                                    {
+                                        Points.UserTotalPointsOnThisChannel(db, irc, channel, s_msg[1], msg);
+                                    }
+                                    else
+                                    ////////
+                                    if (s_msg[0] == "precelkiall")
+                                    {
+                                        Points.UserTotalPointsOnOtherChannel(db, irc, channel, s_msg[1], msg, s_msg[0]);
+                                    }
+                                    else
+                                    if (s_msg[0] == "beczkiall")
+                                    {
+                                        Points.UserTotalPointsOnOtherChannel(db, irc, channel, s_msg[1], msg, s_msg[0]);
                                     }
                                     else
                                     if (s_msg[0] == "watchtime")
@@ -208,7 +241,13 @@ namespace Bot.Modules
                                         else if(comm == "join")
                                             irc.SendPublicChatMessage(channel, "Dołączasz do loterii: !join");
                                         else if(comm == "ranking")
-                                            irc.SendPublicChatMessage(channel, "Wyświetla który jesteś w rankngu: !ranking, !ranking [nick], !ranking [nick] [kanał]");
+                                            irc.SendPublicChatMessage(channel, "Wyświetla który jesteś w rankngu: !ranking, !ranking [nick], !ranking [nick] [kanał], !ranking [top3/top5/top10]");
+                                        else if(comm == "pointsall")
+                                            irc.SendPublicChatMessage(channel, "Wyświetla ile łącznie zdobyłeś punktów: !pointsall - twoje, !pointsall [nick]");
+                                        else if(comm == "precelkiall")
+                                            irc.SendPublicChatMessage(channel, "Wyświetla ile łącznie zdobyłeś precelków: !precelkiall - twoje, !precelkiall [nick]");
+                                        else if(comm == "beczkiall")
+                                            irc.SendPublicChatMessage(channel, "Wyświetla ile łącznie zdobyłeś beczek: !beczkiall - twoje, !beczkiall [nick]");
                                     }
                                     break;
                                 case (3):

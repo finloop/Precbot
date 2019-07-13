@@ -17,6 +17,6 @@ COPY --from=build /app/out .
 COPY --from=build /app/config.json .
 COPY --from=build /app/streams.db .
 
-ENTRYPOINT ["/bin/bash"]
+ENTRYPOINT ["dotnet", "Bot.dll"]
 
 

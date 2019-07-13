@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using Bot.Database.SQLite;
+using Bot.Database.PostgreSQL;
 using Bot.Database;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
@@ -29,7 +29,31 @@ namespace Bot.Modules.Commands
                             userList += $"{i+1}. {stream.Users[i].Name}: {stream.Users[i].Points}, ";
                     }
                     irc.SendPublicChatMessage(channel, $"Top 5 kanału {channelToCheck}: {userList}");
-                }
+                } else
+                if(user == "top3" && stream.Users.Count > 3)
+                {
+                    string userList = "";
+                    for(int i = 0; i < 3; i++)
+                    {
+                        if(i == 2)
+                            userList += $"{i+1}. {stream.Users[i].Name}: {stream.Users[i].Points}.";
+                        else
+                            userList += $"{i+1}. {stream.Users[i].Name}: {stream.Users[i].Points}, ";
+                    }
+                    irc.SendPublicChatMessage(channel, $"Top 5 kanału {channelToCheck}: {userList}");
+                } else
+                if(user == "top10" && stream.Users.Count > 10)
+                {
+                    string userList = "";
+                    for(int i = 0; i < 10; i++)
+                    {
+                        if(i == 9)
+                            userList += $"{i+1}. {stream.Users[i].Name}: {stream.Users[i].Points}.";
+                        else
+                            userList += $"{i+1}. {stream.Users[i].Name}: {stream.Users[i].Points}, ";
+                    }
+                    irc.SendPublicChatMessage(channel, $"Top 5 kanału {channelToCheck}: {userList}");
+                } else 
                 if (userId != -1)
                 {
                     if (ConfigParams.Debug)

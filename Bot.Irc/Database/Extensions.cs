@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System;
 using System.Linq;
-using Bot.Database.SQLite;
+using Bot.Database.PostgreSQL;
 
 namespace Bot.Database
 {

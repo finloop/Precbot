@@ -10,7 +10,7 @@ namespace Bot.Database.PostgreSQL {
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseNpgsql("Host=localhost;Database=Bot;Username=postgres;Password=changeme;Port=5432");
+            optionsBuilder.UseNpgsql("Host=postgres;Database=Bot;Username=Lederman;Password=?R&Xq-5N5W?95P#Q;Port=5432");
         }
     }
 }
