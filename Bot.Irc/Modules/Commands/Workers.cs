@@ -66,6 +66,7 @@ namespace Bot.Modules.Commands
         public static void AddPointsIfStreamIsRunning(string channel)
         {
             List<string> viewers = Chatters.GetViewers(channel);
+            List<User> b_users = new List<User>();
             using (var db = new StreamsContext())
             {
                 var stream = db.Streams.Where(x => x.channelName.Equals(channel)).Include(x => x.Users).First();
@@ -95,9 +96,20 @@ namespace Bot.Modules.Commands
                             Attacker = "",
                             pool = 0
                         };
-                        stream.Users.Add(user);
+                        b_users.Add(user);
                     }
 
+                }
+                db.SaveChanges();
+            }
+            using (var db = new StreamsContext())
+            {
+                var stream = db.Streams.Where(x => x.channelName.Equals(channel)).Include(x => x.Users).First();
+                int startIndex = stream.Users.Max(x => x.UserId) + 1;
+                for(int i = 0; i < b_users.Count; i++)
+                {
+                    b_users[i].UserId = startIndex + i;
+                    stream.Users.Add(b_users[i]);
                 }
                 db.SaveChanges();
             }
