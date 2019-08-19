@@ -236,7 +236,6 @@ namespace Bot.Modules
                                             Utils.ShowRaffleUsers(db, irc, channel, sender);
                                         else if (s_msg[1] == "start")
                                             Utils.TryToStartRaffle(db, irc, channel, sender);
-
                                     }
                                     else
                                     if (s_msg[0] == "help")

@@ -11,3 +11,4 @@ Bot.Database/postgres_data
 Bot.Migrations/streams copy.db
 Bot.Database/SchemaPostgreSQL.cs
 Docker-compose.yml
+Bot.Irc/USERS.csv

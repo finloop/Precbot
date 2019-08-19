@@ -196,15 +196,15 @@ namespace Bot.Modules.Commands
                     irc.SendPublicChatMessage(channel, "UWAGA ZACZYNAM LOSOWANIE");
                     Task.Delay(1000).Wait();
                     irc.SendPublicChatMessage(channel, "5");
-                    Task.Delay(500).Wait();
+                    Task.Delay(1000).Wait();
                     irc.SendPublicChatMessage(channel, "4");
-                    Task.Delay(500).Wait();
+                    Task.Delay(1000).Wait();
                     irc.SendPublicChatMessage(channel, "3");
-                    Task.Delay(500).Wait();
+                    Task.Delay(1000).Wait();
                     irc.SendPublicChatMessage(channel, "2");
-                    Task.Delay(500).Wait();
+                    Task.Delay(1000).Wait();
                     irc.SendPublicChatMessage(channel, "1");
-                    Task.Delay(500).Wait();
+                    Task.Delay(1000).Wait();
                     irc.SendPublicChatMessage(channel, $"@{raffle_users[winner]} wygrał losowanie Pog");
 
                     stream.sub_raffle_users = "";

@@ -31,9 +31,8 @@ namespace Bot
             //RebuildDatabase();
 
             Config.Read();
+
             StartWorkers();
-            //Console.WriteLine(".......");
-            //var t = Task.Run(() => Workers.SendSingleIrcMsg());
             StartBot();
 
 
@@ -70,6 +69,45 @@ namespace Bot
         }
         public static void RebuildDatabase()
         {
+            using (var db = new StreamsContext())
+            {
+                db.Streams.Add(new Bot.Database.Stream()
+                {
+                    PointsName = "beczek",
+                    channelName = "gragasgoesgym",
+                    LastGiveaway = DateTime.Now,
+                    PointsCommand = "beczki",
+                    giveaway_pool = 0,
+                    giveaway_users = "",
+                    LastLive = DateTime.Now,
+                    sub_raffle_info = "Jeszcze nie będzie losowań.",
+                    sub_raffle_points = 300,
+                    sub_raffle_users = "",
+                    points_limit = 500,
+                    points_msg_timeout = TimeSpan.FromSeconds(120)
+                });
+
+                db.Streams.Add(new Bot.Database.Stream()
+                {
+                    PointsName = "precelków",
+                    channelName = "preclak",
+                    LastGiveaway = DateTime.Now,
+                    PointsCommand = "precelki",
+                    giveaway_pool = 0,
+                    giveaway_users = "",
+                    LastLive = DateTime.Now,
+                    sub_raffle_info = "Losowanie subów pod koniec miesiąca ;)",
+                    sub_raffle_points = 300,
+                    sub_raffle_users = "",
+                    points_limit = 500,
+                    points_msg_timeout = TimeSpan.FromSeconds(120)
+                });
+                db.SaveChanges();
+
+            }
+        }
+        public static void RebuildDatabaseFromtxt()
+        {
             // DOESNT BUILD
             /* if (File.Exists("streams.db"))
             {
@@ -104,8 +142,8 @@ namespace Bot
                 var user = new User()
                 {
                     Name = data[0],
-                    Points = long.Parse(data[1])/2,
-                    TotalPoints = long.Parse((data[2]))/2,
+                    Points = long.Parse(data[1]) / 2,
+                    TotalPoints = long.Parse((data[2])) / 2,
                     TotalTimeSpend = new TimeSpan(0, 0, 0),
                     LastSeen = DateTime.Now,
                     Attacker = "",
@@ -114,8 +152,8 @@ namespace Bot
                 var user2 = new User()
                 {
                     Name = data[0],
-                    Points = long.Parse(data[1])/2,
-                    TotalPoints = long.Parse((data[2]))/2,
+                    Points = long.Parse(data[1]) / 2,
+                    TotalPoints = long.Parse((data[2])) / 2,
                     TotalTimeSpend = new TimeSpan(0, 0, 0),
                     LastSeen = DateTime.Now,
                     Attacker = "",
