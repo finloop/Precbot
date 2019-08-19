@@ -13,13 +13,12 @@ namespace Bot.Database.PostgreSQL {
         });
 	
         public DbSet<Stream> Streams {get;set;}
-        public DbSet<User> Users {get;set;}
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
 	        //optionsBuilder.UseLoggerFactory(loggerFactory)  //tie-up DbContext with LoggerFactory object
             //.EnableSensitiveDataLogging().UseNpgsql("Host=194.182.73.164;Database=Bot;Username=Lederman;Password=?R&Xq-5N5W?95P#Q;Port=5432");
-            optionsBuilder.UseNpgsql("Host=194.182.73.164;Database=Bot;Username=Lederman;Password=?R&Xq-5N5W?95P#Q;Port=5432");
+            optionsBuilder.UseNpgsql("Host=194.182.73.164;Database=Bot_1;Username=Lederman;Password=?R&Xq-5N5W?95P#Q;Port=5432");
         }
     }
 }
