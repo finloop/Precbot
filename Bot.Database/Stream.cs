@@ -12,7 +12,11 @@ namespace Bot.Database {
         public long giveaway_pool {get;set;}
         public string giveaway_users {get;set;}
         public DateTime LastLive {get;set;}
-        public string WelcomeMessage {get;set;}
+        public string sub_raffle_users {get;set;}
+        public long sub_raffle_points {get;set;}
+        public long points_limit {get;set;}
+        public TimeSpan points_msg_timeout {get;set;}
+        public string sub_raffle_info {get;set;}
     }
 
     public class User 
@@ -25,5 +29,7 @@ namespace Bot.Database {
         public DateTime LastSeen {get;set;}
         public string Attacker {get;set;}
         public long pool {get;set;}
+        public DateTime LastMsgTime {get;set;}
+        public DateTime LasSubRaffleWon {get;set;}
     }
 }

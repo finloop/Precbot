@@ -227,8 +227,12 @@ namespace Bot.Modules.Commands
                             var sender_user = stream.Users[senderId];
                             var reciv_user = stream.Users[recivId];
                             sender_user.Points -= donate_points;
-                            reciv_user.Points += donate_points;
-                            reciv_user.TotalPoints += donate_points;
+
+                            Extensions.AddPointsToMaxLimit(stream, reciv_user, donate_points);
+
+                            //reciv_user.Points += donate_points;
+                            //reciv_user.TotalPoints += donate_points;
+
                             irc.SendPublicChatMessage(channel, $"{sender} przekazał {donate_points} {stream.PointsName} {reciv}");
                         }
                         else
@@ -283,12 +287,15 @@ namespace Bot.Modules.Commands
 
                     if (roulette_points > 0)
                     {
-                        int i = (new Random()).Next(1, 3);
+                        int i = Extensions.getrandom.Next(1, 3);
                         if (i == 1)
                         {
                             //WON
-                            sender_user.Points += roulette_points;
-                            sender_user.TotalPoints += roulette_points;
+                            //sender_user.Points += roulette_points;
+                            //sender_user.TotalPoints += roulette_points;
+
+                            Extensions.AddPointsToMaxLimit(stream, sender_user, roulette_points);
+
                             irc.SendPublicChatMessage(channel, $"@{sender} wygrał {roulette_points} {stream.PointsName} PogChamp");
                         }
                         else

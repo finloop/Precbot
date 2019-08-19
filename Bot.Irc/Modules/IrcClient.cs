@@ -89,6 +89,7 @@ namespace Bot.Modules
             }
             catch (Exception ex)
             {
+                Console.WriteLine(ex.StackTrace);
                 Reconnect();
             }
 
@@ -103,6 +104,7 @@ namespace Bot.Modules
             }
             catch (Exception ex)
             {
+                Console.WriteLine(ex.StackTrace);
                 Reconnect();
             }
         }
@@ -116,6 +118,7 @@ namespace Bot.Modules
             }
             catch (Exception ex)
             {
+                Console.WriteLine(ex.StackTrace);
                 Reconnect();
             }
         }
@@ -128,6 +131,7 @@ namespace Bot.Modules
             }
             catch (Exception ex)
             {
+                Console.WriteLine(ex.StackTrace);
                 Reconnect();
             }
         }
@@ -145,6 +149,7 @@ namespace Bot.Modules
             }
             catch (Exception ex)
             {
+                Console.WriteLine(ex.StackTrace);
                 Reconnect();
                 return "Error while reading message.";
             }

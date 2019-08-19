@@ -35,16 +35,18 @@ namespace Bot.Modules.Commands
                 List<string> users = new List<string>(stream.giveaway_users.Split(","));
                 if(users.Count > 0)
                 {
-
-                    Random rnd = new Random();
-                    int rand = rnd.Next(0, users.Count);
+                    int rand = Extensions.getrandom.Next(0, users.Count);
                     int winner = stream.Users.FindIndex(x => x.Name.Equals(users[rand]));
                     if(winner != -1)
                     {
 
                         SendSingleIrcMsg(stream.channelName,$"@{stream.Users[winner].Name} wygrał {stream.giveaway_pool} {stream.PointsName} PogChamp");
-                        stream.Users[winner].Points += stream.giveaway_pool;
-                        stream.Users[winner].TotalPoints += stream.giveaway_pool;
+
+                        //stream.Users[winner].Points += stream.giveaway_pool;
+                        //stream.Users[winner].TotalPoints += stream.giveaway_pool;
+
+                        Extensions.AddPointsToMaxLimit(stream, stream.Users[winner], stream.giveaway_pool);
+
                         stream.giveaway_pool = -1;
                         stream.giveaway_users = "";
                     } 
@@ -78,8 +80,11 @@ namespace Bot.Modules.Commands
                     {
                         if (CheckStream.isRunning(channel) || ConfigParams.Debug)
                         {
-                            stream.Users[userId].Points += 1;
-                            stream.Users[userId].TotalPoints += 1;
+                            //stream.Users[userId].Points += 1;
+                            //stream.Users[userId].TotalPoints += 1;
+
+                            Extensions.AddPointsToMaxLimit(stream, stream.Users[userId], 1);
+
                             stream.Users[userId].TotalTimeSpend += TimeSpan.FromMinutes(5);
                         }
                         stream.Users[userId].LastSeen = DateTime.Now;
@@ -94,22 +99,13 @@ namespace Bot.Modules.Commands
                             TotalTimeSpend = new TimeSpan(0, 0, 0),
                             LastSeen = DateTime.Now,
                             Attacker = "",
-                            pool = 0
+                            pool = 0,
+                            LastMsgTime = DateTime.Now,
+                            LasSubRaffleWon = new DateTime(2019, 1, 1)
                         };
-                        b_users.Add(user);
+                        stream.Users.Add(user);
                     }
 
-                }
-                db.SaveChanges();
-            }
-            using (var db = new StreamsContext())
-            {
-                var stream = db.Streams.Where(x => x.channelName.Equals(channel)).Include(x => x.Users).First();
-                int startIndex = stream.Users.Max(x => x.UserId) + 1;
-                for(int i = 0; i < b_users.Count; i++)
-                {
-                    b_users[i].UserId = startIndex + i;
-                    stream.Users.Add(b_users[i]);
                 }
                 db.SaveChanges();
             }

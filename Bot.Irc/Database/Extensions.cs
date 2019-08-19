@@ -9,6 +9,7 @@ namespace Bot.Database
     // TODO: Find a better name for this class
     public static class Extensions
     {
+        public static readonly Random getrandom = new Random();
         // TODO: Add fun: AddPoints, RemovePoints, AddPointsToEverone, 
         public static bool CheckIfStreamExists(StreamsContext db, string channelName)
         {
@@ -50,6 +51,19 @@ namespace Bot.Database
             int userIndex = stream.Users.FindIndex(x => x.Name.Equals(username));
             stream.Users[userIndex].Points -= points;
             //db.SaveChanges();
+        }
+        public static void AddPointsToMaxLimit(Stream stream, User user, long points)
+        {
+            if((user.Points + points) >= stream.points_limit)
+            {
+                long delta = stream.points_limit - user.Points;
+                user.Points += delta;
+                user.TotalPoints += delta;
+            } else
+            {
+                user.Points += points;
+                user.TotalPoints += points;
+            }
         }
     }
 }
